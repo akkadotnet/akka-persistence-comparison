@@ -6,12 +6,26 @@
   </PropertyGroup>
   <!-- App dependencies -->
   <ItemGroup>
-    <PackageVersion Include="Akka.Hosting" Version="$(AkkaHostingVersion)"/>
-    <PackageVersion Include="Microsoft.Extensions.Hosting" Version="9.0.8"/>
+    <PackageVersion Include="Akka.Hosting" Version="$(AkkaHostingVersion)" />
+    <PackageVersion Include="Akka.Hosting.TestKit" Version="$(AkkaHostingVersion)" />
+    <PackageVersion Include="Aspire.Hosting.SqlServer" Version="9.5.1" />
+    <PackageVersion Include="MathNet.Numerics" Version="5.0.0"/>
+    <PackageVersion Include="BenchmarkDotNet" Version="0.15.4" />
+    <PackageVersion Include="Microsoft.Extensions.Hosting" Version="9.0.8" />
+    <PackageVersion Include="Aspire.Hosting.AppHost" Version="9.3.1" />
+    <PackageVersion Include="Testcontainers.Azurite" Version="4.7.0" />
+    <PackageVersion Include="TestContainers.Container.Database.MsSql" Version="1.5.4" />
+    <PackageVersion Include="TestContainers.Container.Database.MySql" Version="1.5.4" />
+    <PackageVersion Include="TestContainers.Container.Database.PostgreSql" Version="1.5.4" />
+    <PackageVersion Include="Testcontainers.MongoDb" Version="4.7.0" />
+    <PackageVersion Include="Testcontainers.MsSql" Version="4.7.0" />
+    <PackageVersion Include="Testcontainers.MySql" Version="4.7.0" />
+    <PackageVersion Include="Testcontainers.PostgreSql" Version="4.7.0" />
+    <PackageVersion Include="Testcontainers.Redis" Version="4.7.0" />
   </ItemGroup>
   <!-- Test dependencies -->
   <!-- SourceLink support for all Akka.NET projects -->
   <ItemGroup>
-    <PackageVersion Include="Microsoft.SourceLink.GitHub" Version="8.0.0"/>
+    <PackageVersion Include="Microsoft.SourceLink.GitHub" Version="8.0.0" />
   </ItemGroup>
 </Project>
