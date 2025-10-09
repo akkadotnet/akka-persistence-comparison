@@ -1,34 +1,74 @@
-﻿using DotNet.Testcontainers.Configurations;
+﻿using Akka.Hosting;
+using Akka.Persistence.Hosting;
+using Akka.Persistence.Sql.Hosting;
+using DotNet.Testcontainers.Configurations;
 using DotNet.Testcontainers.Containers;
+using LinqToDB;
+using Microsoft.Data.SqlClient;
 using Testcontainers.MsSql;
 using static Akka.Persistence.Benchmarks.Fixtures.Consts;
 
 namespace Akka.Persistence.Benchmarks.Fixtures;
 
-public class SqlServerFixture: IFixture
+public class SqlServerFixture: Fixture
 {
-    public SqlServerFixture(bool useVolume = true)
+    public SqlServerFixture(bool useVolume)
     {
-        var builder = new MsSqlBuilder()
-            .WithPassword(Password);
+        var builder = new MsSqlBuilder();
 
         if (useVolume)
-            builder
-                .WithVolumeMount("benchmark-sqlserver-data", "/var/opt/mssql/data", AccessMode.ReadWrite)
-                .WithVolumeMount("benchmark-sqlserver-log", "/var/opt/mssql/log", AccessMode.ReadWrite)
-                .WithVolumeMount("benchmark-sqlserver-secrets", "/var/opt/mssql/secrets", AccessMode.ReadWrite);
+            builder = builder.WithVolumeMount("benchmark-sqlserver-data", "/var/opt/mssql", AccessMode.ReadWrite);
         
         var container = builder.Build();
         
         Container = container;
-        ConnectionString = container.GetConnectionString();
+        ConnectionStringFunc = container.GetConnectionString;
     }
     
-    public DockerContainer Container { get; }
-    public string ConnectionString { get; }
-
-    public Task InitializeAsync()
+    public override DockerContainer Container { get; }
+    protected override Func<string> ConnectionStringFunc { get; }
+    
+    public override async Task<bool> IsVolumeInitializedAsync(string persistenceId)
     {
-        return Container.StartAsync();
+        var connectionString = ConnectionStringFunc();
+        
+        await using var conn = new SqlConnection(connectionString);
+        await conn.OpenAsync();
+
+        await using var cmd = new SqlCommand(
+            """
+                DECLARE @SearchString NVARCHAR(200) = @SearchValue;
+                SELECT CASE 
+                           WHEN EXISTS (
+                               SELECT 1 
+                               FROM dbo.journal
+                               WHERE persistence_id = @SearchString
+                           )
+                           THEN CAST(1 AS BIT)
+                           ELSE CAST(0 AS BIT)
+                       END;
+            """, conn);
+        cmd.Parameters.AddWithValue("@SearchValue", persistenceId);
+
+        try
+        {
+            return (bool)cmd.ExecuteScalar();
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
+    public override void ConfigureAkka(AkkaConfigurationBuilder builder, IServiceProvider provider)
+    {
+        if (Container.State == TestcontainersStates.Undefined)
+            Container.StartAsync().GetAwaiter().GetResult();
+        
+        builder.WithSqlPersistence(
+            connectionString: ConnectionStringFunc(),
+            providerName: ProviderName.SqlServer2022,
+            mode: PersistenceMode.Journal,
+            autoInitialize: true);
     }
 }

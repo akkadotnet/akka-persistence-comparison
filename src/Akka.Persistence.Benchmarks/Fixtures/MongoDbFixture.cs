@@ -1,13 +1,16 @@
-﻿using DotNet.Testcontainers.Configurations;
+﻿using Akka.Hosting;
+using Akka.Persistence.Hosting;
+using Akka.Persistence.MongoDb.Hosting;
+using DotNet.Testcontainers.Configurations;
 using DotNet.Testcontainers.Containers;
 using Testcontainers.MongoDb;
 using static Akka.Persistence.Benchmarks.Fixtures.Consts;
 
 namespace Akka.Persistence.Benchmarks.Fixtures;
 
-public class MongoDbFixture: IFixture
+public class MongoDbFixture: Fixture
 {
-    public MongoDbFixture(bool useVolume = true)
+    public MongoDbFixture(bool useVolume)
     {
         var builder = new MongoDbBuilder()
             .WithUsername(Username)
@@ -15,19 +18,30 @@ public class MongoDbFixture: IFixture
             .WithReplicaSet(DatabaseName);
 
         if (useVolume)
-            builder.WithVolumeMount("benchmark-mongodb-data", "/data/db", AccessMode.ReadWrite);
+            builder = builder.WithVolumeMount("benchmark-mongodb-data", "/data/db", AccessMode.ReadWrite);
         
         var container = builder.Build();
 
         Container = container;
-        ConnectionString = container.GetConnectionString();
+        ConnectionStringFunc = container.GetConnectionString;
     }
     
-    public DockerContainer Container { get; }
-    public string ConnectionString { get; }
-    
-    public Task InitializeAsync()
+    public override DockerContainer Container { get; }
+    protected override Func<string> ConnectionStringFunc { get; }
+
+    public override Task<bool> IsVolumeInitializedAsync(string persistenceId)
     {
-        return Container.StartAsync();
+        throw new NotImplementedException();
+    }
+
+    public override void ConfigureAkka(AkkaConfigurationBuilder builder, IServiceProvider provider)
+    {
+        if (Container.State == TestcontainersStates.Undefined)
+            Container.StartAsync().GetAwaiter().GetResult();
+        
+        builder.WithMongoDbPersistence(
+            connectionString: ConnectionStringFunc(),
+            mode: PersistenceMode.Journal,
+            autoInitialize: true);
     }
 }

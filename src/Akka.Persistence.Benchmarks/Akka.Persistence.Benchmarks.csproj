@@ -9,14 +9,28 @@
 
   <ItemGroup>
     <PackageReference Include="Akka.Hosting.TestKit" />
+    <PackageReference Include="Akka.Persistence.Azure.Hosting" />
+    <PackageReference Include="Akka.Persistence.MongoDb.Hosting" />
+    <PackageReference Include="Akka.Persistence.Redis.Hosting" />
+    <PackageReference Include="Akka.Persistence.Sql.Hosting" />
     <PackageReference Include="MathNet.Numerics" />
     <PackageReference Include="BenchmarkDotNet" />
+    <PackageReference Include="Microsoft.Data.SqlClient" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="MySql.Data" />
+    <PackageReference Include="Npgsql" />
     <PackageReference Include="Testcontainers.MongoDb" />
     <PackageReference Include="Testcontainers.MsSql" />
     <PackageReference Include="Testcontainers.MySql" />
     <PackageReference Include="Testcontainers.PostgreSql" />
     <PackageReference Include="Testcontainers.Redis" />
     <PackageReference Include="Testcontainers.Azurite" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="xunit.runner.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

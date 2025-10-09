@@ -6,5 +6,5 @@ public interface IFixture
 {
     DockerContainer Container { get; }
     string ConnectionString { get; }
-    Task InitializeAsync();
+    Task InitializeContainerAsync();
 }

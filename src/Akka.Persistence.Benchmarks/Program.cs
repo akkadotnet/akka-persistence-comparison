@@ -1,4 +1,5 @@
-﻿namespace Akka.Persistence.Benchmarks;
+﻿/*
+namespace Akka.Persistence.Benchmarks;
 
 public static class Program
 {
@@ -7,3 +8,4 @@ public static class Program
         await Task.Yield();
     }
 }
+*/
