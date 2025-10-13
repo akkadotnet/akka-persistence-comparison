@@ -1,7 +1,5 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Akka.Persistence.Benchmarks.Tests", "src\Akka.Persistence.Benchmarks.Tests\Akka.Persistence.Benchmarks.Tests.csproj", "{EA7E363E-D1C1-49B7-AA57-4785B9190CF8}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SolutionFolder", "SolutionFolder", "{CB6C1195-5067-47DB-8196-75576697DFCC}"
 	ProjectSection(SolutionItems) = preProject
 		coverlet.runsettings = coverlet.runsettings
@@ -20,10 +18,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{EA7E363E-D1C1-49B7-AA57-4785B9190CF8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{EA7E363E-D1C1-49B7-AA57-4785B9190CF8}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{EA7E363E-D1C1-49B7-AA57-4785B9190CF8}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{EA7E363E-D1C1-49B7-AA57-4785B9190CF8}.Release|Any CPU.Build.0 = Release|Any CPU
 		{A2743044-7635-4DE5-931F-9D53624EBC1B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{A2743044-7635-4DE5-931F-9D53624EBC1B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A2743044-7635-4DE5-931F-9D53624EBC1B}.Release|Any CPU.ActiveCfg = Release|Any CPU

@@ -49,31 +49,4 @@ public class PostgreSqlFixture: Fixture
                   }
                   """)
             .WithFallback(SqlPersistence.DefaultConfiguration);
-
-    public override async Task<bool> IsVolumeInitializedAsync(string persistenceId)
-    {
-        var connectionString = ConnectionStringFunc();
-        
-        await using var conn = new NpgsqlConnection(connectionString);
-        await conn.OpenAsync();
-
-        await using var cmd = new NpgsqlCommand(
-            """
-            SELECT EXISTS (
-                SELECT 1 
-                FROM public.journal
-                WHERE persistence_id = @SearchValue
-            );
-            """, conn);
-        cmd.Parameters.AddWithValue("@SearchValue", persistenceId);
-
-        try
-        {
-            return (bool)(cmd.ExecuteScalar() ?? false);
-        }
-        catch
-        {
-            return false;
-        }
-    }
 }

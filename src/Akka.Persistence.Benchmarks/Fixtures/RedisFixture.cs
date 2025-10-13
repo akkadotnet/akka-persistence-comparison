@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Akka.Configuration;
+using Akka.Persistence.Redis;
 using DotNet.Testcontainers.Configurations;
 using DotNet.Testcontainers.Containers;
 using Testcontainers.Redis;
@@ -25,10 +26,17 @@ public class RedisFixture: Fixture
     public override DockerContainer Container { get; }
     protected override Func<string> ConnectionStringFunc { get; }
 
-    public override Config Configuration => throw new NotImplementedException();
-    
-    public override Task<bool> IsVolumeInitializedAsync(string persistenceId)
-    {
-        throw new NotImplementedException();
-    }
+    public override Config Configuration => ConfigurationFactory.ParseString(
+            $$"""
+              akka.persistence.journal
+              {
+                  plugin = "akka.persistence.journal.redis"
+                  redis
+                  {
+                      configuration-string = "{{ConnectionStringFunc()}}"
+                      database = 1
+                  }
+              }
+              """)
+        .WithFallback(RedisPersistence.DefaultConfig());
 }

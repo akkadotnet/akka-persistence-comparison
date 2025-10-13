@@ -12,14 +12,12 @@ public abstract class Fixture: IAsyncDisposable
 
     public abstract Config Configuration { get; }
 
-    public async Task StartAsync()
+    public virtual async Task StartAsync()
     {
         await Container.StartAsync();
     }
     
-    public abstract Task<bool> IsVolumeInitializedAsync(string persistenceId);
-
-    public async ValueTask DisposeAsync()
+    public virtual async ValueTask DisposeAsync()
     {
         await Container.DisposeAsync();
     }

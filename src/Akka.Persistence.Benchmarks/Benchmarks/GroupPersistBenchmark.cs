@@ -2,40 +2,21 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Akka.Actor;
-using Akka.Configuration;
-using Akka.Persistence.Benchmarks.Configs;
-using Akka.Persistence.Benchmarks.Fixtures;
 using BenchmarkDotNet.Attributes;
 
 namespace Akka.Persistence.Benchmarks.Benchmarks;
 
-[Config(typeof(MacroBenchmarkConfig))]
-public class SqlServerGroupPersist: BenchmarkBase
+public abstract class GroupPersistBenchmark: BenchmarkBase
 {
     private const int GroupSize = 10;
-    private const int TestMessageCount = 10_000;
+    private const int TestMessageCount = 5_000;
     private const int TotalMessageCount = TestMessageCount * GroupSize;
     
-    private Fixture? _fixture;
     private IActorRef[]? _persistenceActors;
     
     [Params(1, 100)]
     public override int BatchSize { get; set; }
 
-    protected override TimeSpan CompletionTimeout =>  TimeSpan.FromSeconds(90);
-
-    protected override Config PersistenceConfig => _fixture is null
-        ? throw new Exception("Fixture not initialized") 
-        : _fixture.Configuration;
-    
-    protected override Fixture Fixture => _fixture ?? throw new Exception("Fixture not initialized");
-    
-    protected override async Task SetupFixtureAsync(bool useVolume)
-    {
-        _fixture = new SqlServerFixture(useVolume);
-        await _fixture.StartAsync();
-    }
-    
     protected override async Task GlobalSetupAsync()
     {
         _persistenceActors = Enumerable.Range(1, GroupSize)
@@ -55,7 +36,7 @@ public class SqlServerGroupPersist: BenchmarkBase
     }
     
     [Benchmark(OperationsPerInvoke = TotalMessageCount)]
-    public async Task PersistBenchmark()
+    public async Task Persist()
     {
         if (BatchSize == 1)
         {
@@ -68,7 +49,7 @@ public class SqlServerGroupPersist: BenchmarkBase
     }
     
     [Benchmark(OperationsPerInvoke = TotalMessageCount)]
-    public async Task PersistAsyncBenchmark()
+    public async Task PersistAsync()
     {
         if (BatchSize == 1)
         {

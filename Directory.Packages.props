@@ -25,9 +25,9 @@
     <PackageVersion Include="Microsoft.Extensions.Hosting" Version="9.0.8" />
     <PackageVersion Include="Aspire.Hosting.AppHost" Version="9.3.1" />
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="18.0.0" />
+    <PackageVersion Include="Mongo2Go" Version="4.1.0" />
     <PackageVersion Include="MySql.Data" Version="9.4.0" />
-    <PackageVersion Include="Npgsql" Version="9.0.00
-" />
+    <PackageVersion Include="Npgsql" Version="9.0.00&#xD;&#xA;" />
     <PackageVersion Include="Testcontainers.Azurite" Version="4.7.0" />
     <PackageVersion Include="TestContainers.Container.Database.MsSql" Version="1.5.4" />
     <PackageVersion Include="TestContainers.Container.Database.MySql" Version="1.5.4" />

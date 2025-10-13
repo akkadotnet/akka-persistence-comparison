@@ -18,7 +18,7 @@ public class BenchActor : UntypedPersistentActor
     private readonly int _batchSize;
     private IActorRef? _replyTo;
     
-    public BenchActor(string persistenceId, int replyAfter, IActorRef? replyTo, int batchSize = 50)
+    public BenchActor(string persistenceId, int replyAfter, IActorRef? replyTo = null, int batchSize = 50)
     {
         PersistenceId = persistenceId;
         ReplyAfter = replyAfter;

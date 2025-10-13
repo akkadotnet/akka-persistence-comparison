@@ -14,9 +14,9 @@ public abstract class BenchmarkBase
     protected abstract Fixture? Fixture { get; }
     
     protected TaskCompletionSource? CompletionTaskSource { get; set; }
-    
-    protected Task? CompletionTask => CompletionTaskSource?.Task;
-    
+
+    protected Task CompletionTask => CompletionTaskSource?.Task ?? throw new Exception("CompletionTaskSource is null");
+
     public virtual int BatchSize { get; set; } = 50;
     
     /// <summary>
@@ -79,7 +79,7 @@ public abstract class BenchmarkBase
     [IterationCleanup]
     public void IterationCleanupInternal()
     {
-        if (CompletionTask != null)
+        if (CompletionTaskSource != null)
         {
             CompletionTask.Wait();
             CompletionTaskSource = null;
@@ -88,21 +88,4 @@ public abstract class BenchmarkBase
     }
 
     protected abstract void IterationCleanup();
-
-    /*
-    private IterationState CreateIterationState(string persistenceIdPrefix)
-    {
-        if (GroupSize < 1)
-            throw new IndexOutOfRangeException($"{nameof(GroupSize)} must be greater than 0");
-
-        var completion = new TaskCompletionSource();
-        var startup = new TaskCompletionSource();
-        var aggregator = ActorSystem!.ActorOf(Props.Create(() => new AggregatorActor(completion, startup, GroupSize)), "aggregator");
-        var actors = Enumerable.Range(1, GroupSize)
-            .Select(idx => ActorSystem.ActorOf(Props.Create(() => new BenchActor($"{persistenceIdPrefix}{idx}", TestMessageCount, BatchSize))))
-            .ToArray();
-
-        return new IterationState(completion, startup, aggregator, actors);
-    }
-    */
 }

@@ -1,44 +1,26 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Akka.Actor;
-using Akka.Configuration;
-using Akka.Persistence.Benchmarks.Configs;
-using Akka.Persistence.Benchmarks.Fixtures;
 using BenchmarkDotNet.Attributes;
 
 namespace Akka.Persistence.Benchmarks.Benchmarks;
 
-[Config(typeof(MacroBenchmarkConfig))]
-public class SqlServerPersist: BenchmarkBase
+public abstract class PersistBenchmark: BenchmarkBase
 {
-    private const int TestMessageCount = 10_000;
+    private const int TestMessageCount = 2_500;
     
-    private Fixture? _fixture;
     private IActorRef? _persistenceActor;
     
     [Params(1, 100)]
     public override int BatchSize { get; set; }
     
-    protected override Config PersistenceConfig => _fixture is null
-        ? throw new Exception("Fixture not initialized") 
-        : _fixture.Configuration;
-    
-    protected override Fixture Fixture => _fixture ?? throw new Exception("Fixture not initialized");
-    
-    protected override async Task SetupFixtureAsync(bool useVolume)
-    {
-        _fixture = new SqlServerFixture(useVolume);
-        await _fixture.StartAsync();
-    }
-    
     protected override async Task GlobalSetupAsync()
     {
         _persistenceActor =
-            ActorSystem!.ActorOf(Props.Create(() => new BenchActor("SinglePersistPid", TestMessageCount, null, BatchSize)));
+            ActorSystem!.ActorOf(Props.Create(() => new BenchActor("SingleRecoveryPid", TestMessageCount, null, BatchSize)));
     
         await _persistenceActor.Ask<Done>(Start.Instance, CompletionTimeout);
     }
-
+    
     [IterationSetup]
     public void IterationSetup()
     {
@@ -49,7 +31,7 @@ public class SqlServerPersist: BenchmarkBase
     }
     
     [Benchmark(OperationsPerInvoke = TestMessageCount)]
-    public async Task PersistBenchmark()
+    public async Task Persist()
     {
         if (BatchSize == 1)
         {
@@ -62,7 +44,7 @@ public class SqlServerPersist: BenchmarkBase
     }
     
     [Benchmark(OperationsPerInvoke = TestMessageCount)]
-    public async Task PersistAsyncBenchmark()
+    public async Task PersistAsync()
     {
         if (BatchSize == 1)
         {

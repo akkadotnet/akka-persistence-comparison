@@ -17,9 +17,9 @@
     <PackageReference Include="Akka.Persistence.Sqlite" />
     <PackageReference Include="BenchmarkDotNet" />
     <PackageReference Include="Microsoft.Data.SqlClient" />
+    <PackageReference Include="Mongo2Go" />
     <PackageReference Include="MySql.Data" />
     <PackageReference Include="Npgsql" />
-    <PackageReference Include="Testcontainers.MongoDb" />
     <PackageReference Include="Testcontainers.MsSql" />
     <PackageReference Include="Testcontainers.MySql" />
     <PackageReference Include="Testcontainers.PostgreSql" />

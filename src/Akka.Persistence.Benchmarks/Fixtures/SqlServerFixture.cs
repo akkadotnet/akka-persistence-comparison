@@ -42,36 +42,4 @@ public class SqlServerFixture: Fixture
                 }
                 """)
             .WithFallback(SqlPersistence.DefaultConfiguration);
-
-    public override async Task<bool> IsVolumeInitializedAsync(string persistenceId)
-    {
-        var connectionString = ConnectionStringFunc();
-        
-        await using var conn = new SqlConnection(connectionString);
-        await conn.OpenAsync();
-
-        await using var cmd = new SqlCommand(
-            """
-            DECLARE @SearchString NVARCHAR(200) = @SearchValue;
-            SELECT CASE 
-                       WHEN EXISTS (
-                           SELECT 1 
-                           FROM dbo.journal
-                           WHERE persistence_id = @SearchString
-                       )
-                       THEN CAST(1 AS BIT)
-                       ELSE CAST(0 AS BIT)
-                   END;
-            """, conn);
-        cmd.Parameters.AddWithValue("@SearchValue", persistenceId);
-
-        try
-        {
-            return (bool)cmd.ExecuteScalar();
-        }
-        catch
-        {
-            return false;
-        }
-    }
 }

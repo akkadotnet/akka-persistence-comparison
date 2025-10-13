@@ -1,37 +1,68 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Akka.Configuration;
+using Akka.Persistence.MongoDb;
 using DotNet.Testcontainers.Configurations;
 using DotNet.Testcontainers.Containers;
-using Testcontainers.MongoDb;
+using DotNet.Testcontainers.Builders;
+using Mongo2Go;
 using static Akka.Persistence.Benchmarks.Fixtures.Consts;
 
 namespace Akka.Persistence.Benchmarks.Fixtures;
 
 public class MongoDbFixture: Fixture
 {
+    private readonly MongoDbRunner _runner;
+    
     public MongoDbFixture(bool useVolume)
     {
-        var builder = new MongoDbBuilder()
-            .WithUsername(Username)
-            .WithPassword(Password)
-            .WithReplicaSet(DatabaseName);
+        _runner = MongoDbRunner.Start(singleNodeReplSet: true);
 
-        if (useVolume)
-            builder = builder.WithVolumeMount("benchmark-mongodb-data", "/data/db", AccessMode.ReadWrite);
-        
-        var container = builder.Build();
-
-        Container = container;
-        ConnectionStringFunc = container.GetConnectionString;
+        ConnectionStringFunc = () =>
+        {
+            var s = _runner.ConnectionString.Split('?');
+            return s[0] + $"{DatabaseName}?" + s[1];
+        };
     }
     
-    public override DockerContainer Container { get; }
+    public override DockerContainer Container => throw new NotImplementedException();
+    
     protected override Func<string> ConnectionStringFunc { get; }
-    public override Config Configuration => throw new NotImplementedException();
-
-    public override Task<bool> IsVolumeInitializedAsync(string persistenceId)
+    
+    public override Config Configuration
     {
-        throw new NotImplementedException();
+        get
+        {
+            var cs = ConnectionStringFunc();
+            Console.WriteLine(cs);
+            var s = cs.Split('?');
+            var connectionString = s[0] + DatabaseName + "?directConnection=true&replicaSet=singleNodeReplSet&readPreference=primary";
+            Console.WriteLine(connectionString);
+
+            return ConfigurationFactory.ParseString(
+                    $$"""
+                      akka.persistence.journal
+                      {
+                          plugin = "akka.persistence.journal.mongodb"
+                          mongodb
+                          {
+                              connection-string = "{{connectionString}}"
+                          }
+                      }
+                      """)
+                .WithFallback(MongoDbPersistence.DefaultConfiguration());
+        }
+    } 
+    
+    public override Task StartAsync()
+    {
+        // no-op
+        return Task.CompletedTask;
+    }
+
+    public override ValueTask DisposeAsync()
+    {
+        _runner.Dispose();
+        return ValueTask.CompletedTask;
     }
 }
