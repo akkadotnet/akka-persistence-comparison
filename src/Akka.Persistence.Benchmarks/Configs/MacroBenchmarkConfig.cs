@@ -23,12 +23,14 @@ public class MacroBenchmarkConfig : ManualConfig
         AddColumn(new CategoriesColumn());
         AddLogger(ConsoleLogger.Default);
 
+        /*
         // Safer affinity mask (optional; remove if not needed)
         var processorCount = Environment.ProcessorCount;
         var affinityMaskValue = processorCount == 64
             ? ulong.MaxValue
             : (1UL << processorCount) - 1;
         var affinityMask = (IntPtr)affinityMaskValue;
+        */
 
         AddJob(Job.LongRun
                 .WithGcMode(new GcMode { Server = true, Concurrent = true })

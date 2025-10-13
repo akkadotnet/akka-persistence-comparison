@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Akka.Actor;
 using BenchmarkDotNet.Attributes;
 
@@ -13,21 +14,24 @@ public abstract class PersistBenchmark: BenchmarkBase
     [Params(1, 100)]
     public override int BatchSize { get; set; }
     
-    protected override async Task GlobalSetupAsync()
+    protected override Task GlobalSetupAsync()
     {
-        _persistenceActor =
-            ActorSystem!.ActorOf(Props.Create(() => new BenchActor("SingleRecoveryPid", TestMessageCount, null, BatchSize)));
-    
-        await _persistenceActor.Ask<Done>(Start.Instance, CompletionTimeout);
+        return Task.CompletedTask;
     }
     
     [IterationSetup]
     public void IterationSetup()
     {
+        // Generate unique persistence ID for this iteration
+        var pid = $"benchmark-{Guid.NewGuid()}";
+        _persistenceActor = ActorSystem!.ActorOf(Props.Create(() => new BenchActor(pid, TestMessageCount, null, BatchSize)));
+    
+        _persistenceActor.Ask<Done>(Start.Instance, CompletionTimeout).Wait();
     }
     
     protected override void IterationCleanup()
     {
+        _persistenceActor.GracefulStop(TimeSpan.FromSeconds(5));
     }
     
     [Benchmark(OperationsPerInvoke = TestMessageCount)]

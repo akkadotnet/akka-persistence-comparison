@@ -40,8 +40,8 @@ public abstract class BenchmarkBase
             """
             akka {
                 log-config-on-start = off
-                stdout-loglevel = DEBUG
-                loglevel = DEBUG
+                stdout-loglevel = INFO
+                loglevel = INFO
                 log-dead-letters = off # no dead letters
                 actor {
                     debug {

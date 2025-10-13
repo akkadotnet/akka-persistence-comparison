@@ -17,22 +17,24 @@ public abstract class GroupPersistBenchmark: BenchmarkBase
     [Params(1, 100)]
     public override int BatchSize { get; set; }
 
-    protected override async Task GlobalSetupAsync()
+    protected override Task GlobalSetupAsync()
     {
-        _persistenceActors = Enumerable.Range(1, GroupSize)
-            .Select(idx => ActorSystem!.ActorOf(Props.Create(() => new BenchActor($"GroupPersistPid_{idx}", TestMessageCount, null, BatchSize))))
-            .ToArray();
-    
-        await Task.WhenAll(_persistenceActors.Select(actor => actor.Ask<Done>(Start.Instance)));
+        return Task.CompletedTask;
     }
 
     [IterationSetup]
     public void IterationSetup()
     {
+        _persistenceActors = Enumerable.Range(1, GroupSize)
+            .Select(idx => ActorSystem!.ActorOf(Props.Create(() => new BenchActor($"GroupPersistPid_{idx}", TestMessageCount, null, BatchSize))))
+            .ToArray();
+    
+        Task.WhenAll(_persistenceActors.Select(actor => actor.Ask<Done>(Start.Instance))).Wait();
     }
     
     protected override void IterationCleanup()
     {
+        Task.WhenAll(_persistenceActors!.Select(actor => actor.GracefulStop(TimeSpan.FromSeconds(5)))).Wait();
     }
     
     [Benchmark(OperationsPerInvoke = TotalMessageCount)]
