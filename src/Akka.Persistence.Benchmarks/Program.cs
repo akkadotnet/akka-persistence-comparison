@@ -1,11 +1,19 @@
-﻿/*
+﻿using System;
+using System.Reflection;
+using BenchmarkDotNet.Running;
+
 namespace Akka.Persistence.Benchmarks;
 
 public static class Program
 {
-    public static async Task Main(string[] args)
+    public static void Main(string[] args)
     {
-        await Task.Yield();
+        Console.WriteLine("Akka.Persistence Benchmarks");
+        Console.WriteLine("----------------------------");
+        Console.WriteLine(
+            "IMPORTANT: Make sure Docker is running.");
+        Console.WriteLine();
+
+        BenchmarkSwitcher.FromAssembly(Assembly.GetExecutingAssembly()).Run();
     }
 }
-*/

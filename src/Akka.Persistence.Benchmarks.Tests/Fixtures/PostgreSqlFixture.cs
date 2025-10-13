@@ -1,7 +1,6 @@
-﻿using System;
-using System.Threading.Tasks;
-using Akka.Configuration;
-using Akka.Persistence.Sql;
+﻿using Akka.Hosting;
+using Akka.Persistence.Hosting;
+using Akka.Persistence.Sql.Hosting;
 using DotNet.Testcontainers.Configurations;
 using DotNet.Testcontainers.Containers;
 using LinqToDB;
@@ -35,20 +34,6 @@ public class PostgreSqlFixture: Fixture
     
     public override DockerContainer Container { get; }
     protected override Func<string> ConnectionStringFunc { get; }
-    public override Config Configuration
-        => ConfigurationFactory.ParseString(
-                $$"""
-                  akka.persistence.journal
-                  {
-                      plugin = "akka.persistence.journal.sql"
-                      sql
-                      {
-                          connection-string = "{{ConnectionStringFunc()}}"
-                          provider-name = {{ProviderName.PostgreSQL95}}
-                      }
-                  }
-                  """)
-            .WithFallback(SqlPersistence.DefaultConfiguration);
 
     public override async Task<bool> IsVolumeInitializedAsync(string persistenceId)
     {
@@ -75,5 +60,17 @@ public class PostgreSqlFixture: Fixture
         {
             return false;
         }
+    }
+
+    public override void ConfigureAkka(AkkaConfigurationBuilder builder, IServiceProvider provider)
+    {
+        if (Container.State == TestcontainersStates.Undefined)
+            Container.StartAsync().GetAwaiter().GetResult();
+        
+        builder.WithSqlPersistence(
+            connectionString: ConnectionStringFunc(),
+            providerName: ProviderName.PostgreSQL95,
+            mode: PersistenceMode.Journal,
+            autoInitialize: true);
     }
 }

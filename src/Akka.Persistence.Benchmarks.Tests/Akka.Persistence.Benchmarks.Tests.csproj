@@ -3,20 +3,19 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <!-- Explicitly select the entry point to avoid CS0017 -->
-    <StartupObject>Akka.Persistence.Benchmarks.Program</StartupObject>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Akka.Persistence.Azure" />
-    <PackageReference Include="Akka.Persistence.MongoDb" />
-    <PackageReference Include="Akka.Persistence.PostgreSql" />
-    <PackageReference Include="Akka.Persistence.Redis" />
-    <PackageReference Include="Akka.Persistence.Sql" />
-    <PackageReference Include="Akka.Persistence.Sqlite" />
-    <PackageReference Include="BenchmarkDotNet" />
+    <PackageReference Include="Akka.Hosting.TestKit" />
+    <PackageReference Include="Akka.Persistence.Azure.Hosting" />
+    <PackageReference Include="Akka.Persistence.MongoDb.Hosting" />
+    <PackageReference Include="Akka.Persistence.Redis.Hosting" />
+    <PackageReference Include="Akka.Persistence.Sql.Hosting" />
+    <PackageReference Include="MathNet.Numerics" />
     <PackageReference Include="Microsoft.Data.SqlClient" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
     <PackageReference Include="MySql.Data" />
     <PackageReference Include="Npgsql" />
     <PackageReference Include="Testcontainers.MongoDb" />
@@ -25,6 +24,12 @@
     <PackageReference Include="Testcontainers.PostgreSql" />
     <PackageReference Include="Testcontainers.Redis" />
     <PackageReference Include="Testcontainers.Azurite" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="xunit.runner.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

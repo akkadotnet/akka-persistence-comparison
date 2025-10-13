@@ -21,7 +21,7 @@ public class PostgreSqlJournalReadBenchmarks : JournalReadBenchmarks
     public PostgreSqlJournalReadBenchmarks(ITestOutputHelper output)
         : base(nameof(PostgreSqlJournalReadBenchmarks), output)
     {
-        Fixture = new PostgreSqlFixture(false);
+        Fixture = new PostgreSqlFixture(true);
     }
     
     protected override Fixture Fixture { get; }
@@ -32,7 +32,7 @@ public class MySqlJournalReadBenchmarks : JournalReadBenchmarks
     public MySqlJournalReadBenchmarks(ITestOutputHelper output)
         : base(nameof(MySqlJournalReadBenchmarks), output)
     {
-        Fixture = new MySqlFixture(false);
+        Fixture = new MySqlFixture(true);
     }
     
     protected override Fixture Fixture { get; }

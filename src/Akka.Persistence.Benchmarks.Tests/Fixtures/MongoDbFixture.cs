@@ -1,6 +1,6 @@
-﻿using System;
-using System.Threading.Tasks;
-using Akka.Configuration;
+﻿using Akka.Hosting;
+using Akka.Persistence.Hosting;
+using Akka.Persistence.MongoDb.Hosting;
 using DotNet.Testcontainers.Configurations;
 using DotNet.Testcontainers.Containers;
 using Testcontainers.MongoDb;
@@ -10,6 +10,10 @@ namespace Akka.Persistence.Benchmarks.Fixtures;
 
 public class MongoDbFixture: Fixture
 {
+    public MongoDbFixture() : this(false)
+    {
+    }
+    
     public MongoDbFixture(bool useVolume)
     {
         var builder = new MongoDbBuilder()
@@ -28,10 +32,20 @@ public class MongoDbFixture: Fixture
     
     public override DockerContainer Container { get; }
     protected override Func<string> ConnectionStringFunc { get; }
-    public override Config Configuration => throw new NotImplementedException();
 
     public override Task<bool> IsVolumeInitializedAsync(string persistenceId)
     {
         throw new NotImplementedException();
+    }
+
+    public override void ConfigureAkka(AkkaConfigurationBuilder builder, IServiceProvider provider)
+    {
+        if (Container.State == TestcontainersStates.Undefined)
+            Container.StartAsync().GetAwaiter().GetResult();
+        
+        builder.WithMongoDbPersistence(
+            connectionString: ConnectionStringFunc(),
+            mode: PersistenceMode.Journal,
+            autoInitialize: true);
     }
 }

@@ -1,7 +1,6 @@
-﻿using System;
-using System.Threading.Tasks;
-using Akka.Configuration;
-using Akka.Persistence.Sql;
+﻿using Akka.Hosting;
+using Akka.Persistence.Hosting;
+using Akka.Persistence.Sql.Hosting;
 using DotNet.Testcontainers.Configurations;
 using DotNet.Testcontainers.Containers;
 using LinqToDB;
@@ -13,6 +12,10 @@ namespace Akka.Persistence.Benchmarks.Fixtures;
 
 public class MySqlFixture: Fixture
 {
+    public MySqlFixture() : this(false)
+    {
+    }
+    
     public MySqlFixture(bool useVolume)
     {
         var builder = new MySqlBuilder()
@@ -31,20 +34,6 @@ public class MySqlFixture: Fixture
     
     public override DockerContainer Container { get; }
     protected override Func<string> ConnectionStringFunc { get; }
-    public override Config Configuration
-        => ConfigurationFactory.ParseString(
-                $$"""
-                  akka.persistence.journal
-                  {
-                      plugin = "akka.persistence.journal.sql"
-                      sql
-                      {
-                          connection-string = "{{ConnectionStringFunc()}}"
-                          provider-name = {{ProviderName.PostgreSQL95}}
-                      }
-                  }
-                  """)
-            .WithFallback(SqlPersistence.DefaultConfiguration);
 
     public override async Task<bool> IsVolumeInitializedAsync(string persistenceId)
     {
@@ -55,16 +44,16 @@ public class MySqlFixture: Fixture
 
         await using var cmd = new MySqlCommand(
            """
-           SELECT 
-               CASE 
-                   WHEN EXISTS (
-                       SELECT 1
-                       FROM journal
-                       WHERE persistence_id = @SearchValue
-                   ) 
-                   THEN TRUE 
-                   ELSE FALSE 
-               END;
+               SELECT 
+                   CASE 
+                       WHEN EXISTS (
+                           SELECT 1
+                           FROM journal
+                           WHERE persistence_id = @SearchValue
+                       ) 
+                       THEN TRUE 
+                       ELSE FALSE 
+                   END;
            """, conn);
         cmd.Parameters.AddWithValue("@SearchValue", persistenceId);
 
@@ -76,5 +65,17 @@ public class MySqlFixture: Fixture
         {
             return false;
         }
+    }
+
+    public override void ConfigureAkka(AkkaConfigurationBuilder builder, IServiceProvider provider)
+    {
+        if (Container.State == TestcontainersStates.Undefined)
+            Container.StartAsync().GetAwaiter().GetResult();
+        
+        builder.WithSqlPersistence(
+            connectionString: ConnectionStringFunc(),
+            providerName: ProviderName.MySql,
+            mode: PersistenceMode.Journal,
+            autoInitialize: true);
     }
 }
