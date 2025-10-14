@@ -8,6 +8,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SolutionFolder", "SolutionF
 		global.json = global.json
 		README.md = README.md
 		RELEASE_NOTES.md = RELEASE_NOTES.md
+		RESULT.md = RESULT.md
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Akka.Persistence.Benchmarks", "src\Akka.Persistence.Benchmarks\Akka.Persistence.Benchmarks.csproj", "{A2743044-7635-4DE5-931F-9D53624EBC1B}"
