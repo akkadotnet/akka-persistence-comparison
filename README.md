@@ -19,6 +19,9 @@ WarmupCount=3
 
 ## Azure Table Storage
 
+> [!NOTE]
+> `Akka.Persistence.Azure` benchmark was run using Azurite emulator and not an actual Azure Storage, these benchmark results does not represent actual real world performance numbers.
+
 ### Azure Group Persist Benchmark
 
 | Method       | BatchSize |         Mean |         Error |        StdDev |         msg/sec |
