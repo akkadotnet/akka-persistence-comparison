@@ -7,7 +7,7 @@ namespace Akka.Persistence.Benchmarks.Benchmarks;
 
 public abstract class PersistBenchmark: BenchmarkBase
 {
-    private const int TestMessageCount = 2_500;
+    private const int TestMessageCount = 1_000;
     
     private IActorRef? _persistenceActor;
     

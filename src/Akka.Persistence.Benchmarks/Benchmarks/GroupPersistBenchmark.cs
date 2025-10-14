@@ -9,7 +9,7 @@ namespace Akka.Persistence.Benchmarks.Benchmarks;
 public abstract class GroupPersistBenchmark: BenchmarkBase
 {
     private const int GroupSize = 10;
-    private const int TestMessageCount = 5_000;
+    private const int TestMessageCount = 1_000;
     private const int TotalMessageCount = TestMessageCount * GroupSize;
     
     private IActorRef[]? _persistenceActors;

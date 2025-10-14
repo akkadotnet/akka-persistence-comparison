@@ -7,7 +7,7 @@ namespace Akka.Persistence.Benchmarks.Benchmarks;
 
 public abstract class RecoveryBenchmark: BenchmarkBase
 {
-    private const int TestMessageCount = 10_000;
+    private const int TestMessageCount = 2_000;
     
     private IActorRef? _persistentActor;
     private IActorRef? _watchActor;
