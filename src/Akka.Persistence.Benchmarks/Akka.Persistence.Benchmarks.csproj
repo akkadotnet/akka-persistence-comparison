@@ -1,0 +1,30 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net9.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <!-- Explicitly select the entry point to avoid CS0017 -->
+    <StartupObject>Akka.Persistence.Benchmarks.Program</StartupObject>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Akka.Persistence.Azure" />
+    <PackageReference Include="Akka.Persistence.MongoDb" />
+    <PackageReference Include="Akka.Persistence.PostgreSql" />
+    <PackageReference Include="Akka.Persistence.Redis" />
+    <PackageReference Include="Akka.Persistence.Sql" />
+    <PackageReference Include="Akka.Persistence.Sqlite" />
+    <PackageReference Include="BenchmarkDotNet" />
+    <PackageReference Include="Microsoft.Data.SqlClient" />
+    <PackageReference Include="Mongo2Go" />
+    <PackageReference Include="MySql.Data" />
+    <PackageReference Include="Npgsql" />
+    <PackageReference Include="Testcontainers.MsSql" />
+    <PackageReference Include="Testcontainers.MySql" />
+    <PackageReference Include="Testcontainers.PostgreSql" />
+    <PackageReference Include="Testcontainers.Redis" />
+    <PackageReference Include="Testcontainers.Azurite" />
+  </ItemGroup>
+
+</Project>
