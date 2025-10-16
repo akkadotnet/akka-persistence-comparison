@@ -13,7 +13,7 @@
     <PackageVersion Include="Akka.Persistence.MongoDb" Version="1.5.42" />
     <PackageVersion Include="Akka.Persistence.MongoDb.Hosting" Version="1.5.42" />
     <PackageVersion Include="Akka.Persistence.PostgreSql" Version="1.5.37" />
-    <PackageVersion Include="Akka.Persistence.Redis" Version="1.5.42" />
+    <PackageVersion Include="Akka.Persistence.Redis" Version="1.5.53" />
     <PackageVersion Include="Akka.Persistence.Redis.Hosting" Version="1.5.42" />
     <PackageVersion Include="Akka.Persistence.Sql" Version="1.5.51.1" />
     <PackageVersion Include="Akka.Persistence.Sql.Hosting" Version="1.5.51.1" />
