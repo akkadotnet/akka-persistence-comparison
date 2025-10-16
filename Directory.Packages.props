@@ -8,7 +8,7 @@
   <ItemGroup>
     <PackageVersion Include="Akka.Hosting" Version="$(AkkaHostingVersion)" />
     <PackageVersion Include="Akka.Hosting.TestKit" Version="$(AkkaHostingVersion)" />
-    <PackageVersion Include="Akka.Persistence.Azure" Version="1.5.51.1" />
+    <PackageVersion Include="Akka.Persistence.Azure" Version="1.5.53" />
     <PackageVersion Include="Akka.Persistence.Azure.Hosting" Version="1.5.51.1" />
     <PackageVersion Include="Akka.Persistence.MongoDb" Version="1.5.42" />
     <PackageVersion Include="Akka.Persistence.MongoDb.Hosting" Version="1.5.42" />
