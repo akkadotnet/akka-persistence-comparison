@@ -15,7 +15,7 @@
     <PackageVersion Include="Akka.Persistence.PostgreSql" Version="1.5.37" />
     <PackageVersion Include="Akka.Persistence.Redis" Version="1.5.42" />
     <PackageVersion Include="Akka.Persistence.Redis.Hosting" Version="1.5.42" />
-    <PackageVersion Include="Akka.Persistence.Sql" Version="1.5.51.1" />
+    <PackageVersion Include="Akka.Persistence.Sql" Version="1.5.55" />
     <PackageVersion Include="Akka.Persistence.Sql.Hosting" Version="1.5.51.1" />
     <PackageVersion Include="Akka.Persistence.Sqlite" Version="1.5.39" />
     <PackageVersion Include="Aspire.Hosting.SqlServer" Version="9.5.1" />
